@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+#include <malloc.h>
 
-void cut(char* s, char* tag1, char* tag2, int len)
+char* cut(char* s, char* tag1, char* tag2, int len)
 {
 	void* first = strstr(s, tag1);
 	if(first == NULL)
@@ -30,9 +31,15 @@ void cut(char* s, char* tag1, char* tag2, int len)
 		*first = '\0';
 		return ;
 	}*/
-	memcpy((void*)first, (void*)p, strlen(p));
+	
+	void* ret = malloc(100);
+        memcpy(ret, first+strlen(tag1), second-first-strlen(tag1));
+	*((char*)(ret+(second-first-strlen(tag1)))) = '\0';
+
+	memcpy(first, p, strlen(p));
 	*((char*)(first+strlen(tag1)-1)) = '\0';
-	//*((char*)first) = ']';
+	
+	return ret;
 }
 
 int main()
@@ -44,6 +51,7 @@ int main()
 	memcpy(s, cs, strlen(cs));
 	int len = strlen(s);
 	printf("ori: %.*s\n", len, s);
-	cut(s, tag1, tag2, len);
+	char* mid = cut(s, tag1, tag2, len);
 	printf("after: %.*s\n", len, s);
+	printf("mid: %s\n", mid);
 }

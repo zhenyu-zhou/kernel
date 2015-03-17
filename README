@@ -17,13 +17,16 @@ The output of kernel space: kernel_output
 USAGE
 ./python_run.sh
 
+The output of user space: user_output_python
+The output of kernel space: kernel_output_python
+
 3. Render
 
 USAGE
 ./render_run.sh
 
-The output of user space: user_output_python
-The output of kernel space: kernel_output_python
+The output of user space: user_output_render
+The output of kernel space: kernel_output_render
 
 
 To clean the whole project:

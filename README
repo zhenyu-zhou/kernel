@@ -1,0 +1,26 @@
+Netlink Sample
+Mar 2015
+By zzy
+
+Fit Ubuntu 14.04
+
+1. C
+
+USAGE
+./run.sh
+
+The output of user space: user_output
+The output of kernel space: kernel_output
+
+2. Python
+
+USAGE
+./python_run.sh
+
+The output of user space: user_output_python
+The output of kernel space: kernel_output_python
+
+
+To clean the whole project:
+make clean
+

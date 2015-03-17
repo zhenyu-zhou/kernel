@@ -28,6 +28,13 @@ USAGE
 The output of user space: user_output_render
 The output of kernel space: kernel_output_render
 
+4. Captcha
+
+USAGE
+./captcha_run.sh
+
+The output of user space: user_output_captcha
+The output of kernel space: kernel_output_captcha
 
 To clean the whole project:
 make clean

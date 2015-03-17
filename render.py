@@ -19,6 +19,10 @@ def main():
     l = Link()
     s = c_char_p(l.connect())
     data = s.value
+    while not data:
+        s = c_char_p(l.connect())
+        data = s.value
+    print "data: ", data
     challenge, verify = data.split(',')
 
     print "chanllenge:", challenge

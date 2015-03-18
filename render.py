@@ -1,3 +1,5 @@
+#coding:utf-8
+
 import socket
 import pygtk
 pygtk.require('2.0')
@@ -23,8 +25,16 @@ def main():
         s = c_char_p(l.connect())
         data = s.value
     print "data: ", data
-    ip, port, message, timestamp, signature, image_data = data.split('&')
-    print "split_zzy: ", ip, port, message, timestamp, signature
+    myset = data.split('&')
+    ip = myset[0]
+    port = myset[1]
+    message = myset[2]
+    timestamp = myset[3]
+    signature = myset[4]
+    image_data = myset[5]
+    for i in range(6, len(myset)):
+        image_data = image_data+myset[i]
+
     mw = MainWin(challenge, verify)
     mw.main()
 

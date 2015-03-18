@@ -37,17 +37,17 @@ char* cut(char* s, char* tag1, char* tag2, int len)
 	*((char*)(ret+(second-first-strlen(tag1)))) = '\0';
 
 	memcpy(first, p, strlen(p));
-	*((char*)(first+strlen(tag1)-1)) = '\0';
+	*((char*)(first+strlen(p))) = '\0';
 	
 	return ret;
 }
 
 int main()
 {
-	char* tag1 = "~zzy";
-	char* tag2 = "@zzy";
+	char* tag1 = "@#$zzy";
+	char* tag2 = "zzy@#$";
 	char* s = (char*)malloc(100);
-	char* cs = "1234~zzy567@zzy890";
+	char* cs = "1234@#$zzy567zzy@#$890";
 	memcpy(s, cs, strlen(cs));
 	int len = strlen(s);
 	printf("ori: %.*s\n", len, s);

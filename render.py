@@ -5,6 +5,7 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import urllib2
+import base64
 
 from ctypes import *
 lib = cdll.LoadLibrary('./libzzy.so')
@@ -24,18 +25,21 @@ def main():
     while not data:
         s = c_char_p(l.connect())
         data = s.value
-    print "data: ", data
+    # print "data: ", data
     myset = data.split('&')
+    print "set: ", myset
     ip = myset[0]
     port = myset[1]
     message = myset[2]
     timestamp = myset[3]
     signature = myset[4]
-    image_data = myset[5]
-    for i in range(6, len(myset)):
+    verify = myset[5]
+    image_data = myset[6]
+    for i in range(7, len(myset)):
         image_data = image_data+myset[i]
+    print "image: ", image_data
 
-    mw = MainWin(challenge, verify)
+    mw = MainWin(image_data, "http://localhost:55555/verify")
     mw.main()
 
 class MainWin:
@@ -49,8 +53,7 @@ class MainWin:
         urllib2.urlopen(self.verify)
         self.window.destroy()
 
-    def __init__(self, path, verify):
-        self.path = path
+    def __init__(self, image, verify):
         self.verify = verify
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.connect("destroy", self.destroy)
@@ -67,13 +70,13 @@ class MainWin:
         #setup image
         self.image = gtk.Image()
         print "begin to download captcha image"
-        response = urllib2.urlopen(path)
-        image = response.read()
         loader = gtk.gdk.PixbufLoader()
+        # convert b64 to png
+        image = image.decode('base64')
         loader.write(image)
         loader.close()
         print "captcha image downloaded"
-        self.image.set_from_pixbuf(loader.get_pixbuf())
+        self.image.set_from_pixbuf(loader.get_pixbuf().scale_simple(150, 150, gtk.gdk.INTERP_BILINEAR))
         self.vbox.add(self.image)
         self.image.show()
         #setup entry
@@ -96,4 +99,3 @@ class MainWin:
 
 if __name__ == "__main__":
     main()
-

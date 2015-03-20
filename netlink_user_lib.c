@@ -24,8 +24,6 @@ class Link{
 public:
 char* connect()
 {
-    // printf("Enter connect!\n");
-
     sock_fd = socket(PF_NETLINK, SOCK_RAW, NETLINK_USER);
     if (sock_fd < 0)
     {
@@ -66,7 +64,7 @@ char* connect()
 
     /* Read message from kernel */
     recvmsg(sock_fd, &msg, 0);
-    printf("Received message payload: %s\n", (char *)NLMSG_DATA(nlh));
+    // printf("Received message payload: %s\n", (char *)NLMSG_DATA(nlh));
     close(sock_fd);
     // printf("Addr: %p\n", (char *)NLMSG_DATA(nlh));
     //string ret = (char *)NLMSG_DATA(nlh);

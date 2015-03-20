@@ -17,7 +17,7 @@ static void hello_nl_recv_msg(struct sk_buff *skb)
     char *msg = "http://yoursmiles.org/ismile/anime/minami-ke7.png, 1234567zzy";
     int res;
 
-    printk(KERN_INFO "Entering: %s\n", __FUNCTION__);
+    // printk(KERN_INFO "Entering: %s\n", __FUNCTION__);
 
     msg_size = strlen(msg);
 
@@ -51,7 +51,7 @@ static int __init hello_init(void)
         .input = hello_nl_recv_msg,
     };
 
-    printk("Entering: %s\n", __FUNCTION__);
+    // printk("Entering: %s\n", __FUNCTION__);
 
     nl_sk = netlink_kernel_create(&init_net, NETLINK_USER, &cfg);
 

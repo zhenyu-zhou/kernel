@@ -22,11 +22,15 @@ def main():
     l = Link()
     s = c_char_p(l.connect())
     data = s.value
-    while not data:
+    buf = ""
+    while data.find("&zzytail") < 0:
         s = c_char_p(l.connect())
         data = s.value
+        if cmp(data, "Hello from zzy") == 0:
+            continue
+        buf = buf+data
     # print "data: ", data
-    myset = data.split('&')
+    myset = buf.split('&')
     print "set: ", myset
     ip = myset[0]
     port = myset[1]
@@ -35,7 +39,7 @@ def main():
     signature = myset[4]
     verify = myset[5]
     image_data = myset[6]
-    for i in range(7, len(myset)):
+    for i in range(7, len(myset)-1):
         image_data = image_data+myset[i]
     print "image: ", image_data
 

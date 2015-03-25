@@ -4,14 +4,14 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <linux/netlink.h>
-//#include <string>
-//#include <Python.h>
+// #include <cstring>
+// #include <Python.h>
 
 #define NETLINK_USER 31
 
 #define MAX_PAYLOAD 1024 /* maximum payload size*/
 
-//using namespace std;
+// using namespace std;
 
 
 struct sockaddr_nl src_addr, dest_addr;
@@ -25,10 +25,11 @@ public:
 char* connect()
 {
     sock_fd = socket(PF_NETLINK, SOCK_RAW, NETLINK_USER);
-    if (sock_fd < 0)
+    while (sock_fd < 0)
     {
 	// printf("Bad sock\n");
-        return NULL;
+	sock_fd = socket(PF_NETLINK, SOCK_RAW, NETLINK_USER);
+        // return NULL;
     }
 
     memset(&src_addr, 0, sizeof(src_addr));
@@ -57,18 +58,17 @@ char* connect()
     msg.msg_iov = &iov;
     msg.msg_iovlen = 1;
 
-    //printf("Sending message to kernel\n");
+    printf("Sending message to kernel\n");
     sendmsg(sock_fd, &msg, 0);
     //printf("Waiting for message from kernel\n");
 
-
     /* Read message from kernel */
     recvmsg(sock_fd, &msg, 0);
-    // printf("Received message payload: %s\n", (char *)NLMSG_DATA(nlh));
+    printf("Received message payload: %s\n", (char *)NLMSG_DATA(nlh));
     close(sock_fd);
     // printf("Addr: %p\n", (char *)NLMSG_DATA(nlh));
     //string ret = (char *)NLMSG_DATA(nlh);
-    //printf("String value: %s\n", ret.c_str());
+    printf("String value: %s\n",  (char *)NLMSG_DATA(nlh)); // ret.c_str());
     return (char *)NLMSG_DATA(nlh);
 }
 };

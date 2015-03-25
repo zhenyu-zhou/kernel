@@ -22,19 +22,25 @@ def main():
     l = Link()
     s = c_char_p(l.connect())
     data = s.value
-    #print "data: ", data
-    buf = ""
+    # print "data1: ", data
+    if data:
+        buf = data
+    else:
+        buf = ""
     while not data or data.find("&zzytail") < 0:
-        #print "data: ", data
+        # print "data2: ", data
+        # if data:
+        #     print "data3: ", data
         if not data:
             continue
-        print "data: ", data
+        # print "data4: ", data
         s = c_char_p(l.connect())
         data = s.value
         if cmp(data, "Hello from zzy") == 0:
             continue
         buf = buf+data
-    print "buf: ", buf
+
+    # print "buf: ", buf
     myset = buf.split('&')
     print "set: ", myset
     ip = myset[0]
@@ -46,7 +52,7 @@ def main():
     image_data = myset[6]
     for i in range(7, len(myset)-1):
         image_data = image_data+myset[i]
-    print "image: ", image_data
+    # print "image: ", image_data
 
     mw = MainWin(image_data, "http://localhost:55555/verify")
     mw.main()

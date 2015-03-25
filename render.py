@@ -22,14 +22,19 @@ def main():
     l = Link()
     s = c_char_p(l.connect())
     data = s.value
+    #print "data: ", data
     buf = ""
-    while data.find("&zzytail") < 0:
+    while not data or data.find("&zzytail") < 0:
+        #print "data: ", data
+        if not data:
+            continue
+        print "data: ", data
         s = c_char_p(l.connect())
         data = s.value
         if cmp(data, "Hello from zzy") == 0:
             continue
         buf = buf+data
-    # print "data: ", data
+    print "buf: ", buf
     myset = buf.split('&')
     print "set: ", myset
     ip = myset[0]

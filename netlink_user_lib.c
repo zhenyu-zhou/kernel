@@ -58,9 +58,9 @@ char* connect()
     msg.msg_iov = &iov;
     msg.msg_iovlen = 1;
 
-    printf("Sending message to kernel\n");
+    // printf("Sending message to kernel\n");
     sendmsg(sock_fd, &msg, 0);
-    //printf("Waiting for message from kernel\n");
+    printf("Waiting for message from kernel\n");
 
     /* Read message from kernel */
     recvmsg(sock_fd, &msg, 0);

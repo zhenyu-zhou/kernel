@@ -28,14 +28,14 @@ def main():
     else:
         buf = ""
     while not data or data.find("&zzytail") < 0:
-        # print "data2: ", data
-        # if data:
-        #     print "data3: ", data
-        if not data:
-            continue
+        print "data2: ", data
+        if data:
+            print "data3: ", data
         # print "data4: ", data
         s = c_char_p(l.connect())
         data = s.value
+        if not data:
+            continue
         if cmp(data, "Hello from zzy") == 0:
             continue
         buf = buf+data

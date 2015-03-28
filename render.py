@@ -31,9 +31,9 @@ def main():
     else:
         buf = ""
     while not data or data.find("&zzytail") < 0:
-        print "data2: ", data
-        if data:
-            print "data3: ", data
+        # print "data2: ", data
+        #if data:
+        #    print "data3: ", data
         # print "data4: ", data
         s = c_char_p(l.recv())
         data = s.value
@@ -45,7 +45,7 @@ def main():
 
     # print "buf: ", buf
     myset = buf.split('&')
-    print "set: ", myset
+    # print "set: ", myset
     ip = myset[0]
     port = myset[1]
     message = myset[2]
@@ -57,7 +57,7 @@ def main():
         image_data = image_data+myset[i]
     # print "image: ", image_data
 
-    mw = MainWin(image_data, "http://localhost:55555/verify")
+    mw = MainWin(image_data, verify)
     mw.main()
 
 class MainWin:

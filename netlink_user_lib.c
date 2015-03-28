@@ -19,6 +19,7 @@ struct nlmsghdr *nlh = NULL;
 struct iovec iov;
 int sock_fd;
 struct msghdr msg;
+char* end_tag = "&zzytail";
 
 class Link{
 public:
@@ -27,9 +28,7 @@ char* connect()
     sock_fd = socket(PF_NETLINK, SOCK_RAW, NETLINK_USER);
     while (sock_fd < 0)
     {
-	// printf("Bad sock\n");
 	sock_fd = socket(PF_NETLINK, SOCK_RAW, NETLINK_USER);
-        // return NULL;
     }
 
     memset(&src_addr, 0, sizeof(src_addr));
@@ -58,25 +57,19 @@ char* connect()
     msg.msg_iov = &iov;
     msg.msg_iovlen = 1;
 
-    // printf("Sending message to kernel\n");
     sendmsg(sock_fd, &msg, 0);
-    printf("Waiting for message from kernel\n");
+    // printf("Waiting for message from kernel\n");
 
     /* Read message from kernel */
     recvmsg(sock_fd, &msg, 0);
-    printf("Received message payload: %s\n", (char *)NLMSG_DATA(nlh));
-    // close(sock_fd);
-    // printf("Addr: %p\n", (char *)NLMSG_DATA(nlh));
-    //string ret = (char *)NLMSG_DATA(nlh);
-    // printf("String value: %s\n",  (char *)NLMSG_DATA(nlh)); // ret.c_str());
     return (char *)NLMSG_DATA(nlh);
 }
 
 char* recv()
 {
     recvmsg(sock_fd, &msg, 0);
-    printf("Received message payload: %s\n", (char *)NLMSG_DATA(nlh));
-    if(strstr((char *)NLMSG_DATA(nlh), "&zzytail") != NULL)
+    // printf("Received message payload in recv: %s\n", (char *)NLMSG_DATA(nlh));
+    if(strstr((char *)NLMSG_DATA(nlh), end_tag) != NULL)
         close(sock_fd);
     return (char *)NLMSG_DATA(nlh);
 }

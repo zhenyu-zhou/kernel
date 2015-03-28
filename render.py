@@ -17,6 +17,9 @@ class Link(object):
     def connect(self):
         return lib.Link_connect(self.obj)
 
+    def recv(self):
+        return lib.Link_recv(self.obj)
+
 def main():
 
     l = Link()
@@ -32,7 +35,7 @@ def main():
         if data:
             print "data3: ", data
         # print "data4: ", data
-        s = c_char_p(l.connect())
+        s = c_char_p(l.recv())
         data = s.value
         if not data:
             continue

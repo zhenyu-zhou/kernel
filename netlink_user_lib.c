@@ -65,16 +65,27 @@ char* connect()
     /* Read message from kernel */
     recvmsg(sock_fd, &msg, 0);
     printf("Received message payload: %s\n", (char *)NLMSG_DATA(nlh));
-    close(sock_fd);
+    // close(sock_fd);
     // printf("Addr: %p\n", (char *)NLMSG_DATA(nlh));
     //string ret = (char *)NLMSG_DATA(nlh);
-    printf("String value: %s\n",  (char *)NLMSG_DATA(nlh)); // ret.c_str());
+    // printf("String value: %s\n",  (char *)NLMSG_DATA(nlh)); // ret.c_str());
     return (char *)NLMSG_DATA(nlh);
 }
+
+char* recv()
+{
+    recvmsg(sock_fd, &msg, 0);
+    printf("Received message payload: %s\n", (char *)NLMSG_DATA(nlh));
+    if(strstr((char *)NLMSG_DATA(nlh), "&zzytail") != NULL)
+        close(sock_fd);
+    return (char *)NLMSG_DATA(nlh);
+}
+
 };
 
 extern "C" {
     Link* Link_new(){ return new Link(); }
     void Link_connect(Link* l){ l->connect(); }
+    void Link_recv(Link* l){l->recv();}
 }
 

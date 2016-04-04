@@ -1,0 +1,19 @@
+[  186.585385] flag: 0
+[  186.585534] flag: 0
+[  187.586060] flag: 0
+[  188.586841] flag: 0
+[  189.587483] zzy: urg_data: y
+[  189.587483] zzy: the old entrance for copy iovec
+[  189.587483] flag: 1
+[  189.587483] flag & MSG_OOB
+[  189.587483] zzy: in urg recv
+[  189.587483] zzy: inside if
+[  189.587483] urg_data c: y
+[  189.587483] zzy: copy urg
+[  189.587483] in send_oob_zzy
+[  189.587483] create sock successfully!
+[  189.587494] flag: 0
+[  189.587495] zzy: urg_data: 
+[  189.594347] in hello
+[  189.594348] Netlink received msg payload: Hello from zzy
+[  190.588435] flag: 0

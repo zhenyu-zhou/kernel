@@ -6,6 +6,7 @@ pygtk.require('2.0')
 import gtk
 import urllib2
 import base64
+import rsa
 
 from ctypes import *
 lib = cdll.LoadLibrary('./libzzy.so')
@@ -25,13 +26,13 @@ def main():
     l = Link()
     s = c_char_p(l.connect())
     data = s.value
-    # print "data1: ", data
+    print "data1: ", data
     if data:
         buf = data
     else:
         buf = ""
     while not data or data.find("&zzytail") < 0:
-        # print "data2: ", data
+        print "data2: ", data
         #if data:
         #    print "data3: ", data
         # print "data4: ", data
@@ -41,13 +42,28 @@ def main():
             continue
         if cmp(data, "Hello from zzy") == 0:
             continue
+	# print "data buf: ", data
         buf = buf+data
 
+    # print "data out: ", data
     # print "buf: ", buf
     myset = buf.split('&')
     # print "set: ", myset
     ip = myset[0]
     port = myset[1]
+
+    s = socket.socket()
+    s.connect((ip, port))
+
+    (pub, priv) = rsa.newkeys(512)
+    s.send(pub.e)
+    s.send(pub.n)
+
+    image_data = s.recv(65535)
+    image_data = rsa.decrypt(image_data, priv)
+
+    """
+
     message = myset[2]
     timestamp = myset[3]
     signature = myset[4]
@@ -55,10 +71,27 @@ def main():
     image_data = myset[6]
     for i in range(7, len(myset)-1):
         image_data = image_data+myset[i]
+    # if image_data.find("@#$captchatail@#$") > 0:
+    #    image_data = image_data[:-len("@#$captchatail@#$")]
     # print "image: ", image_data
 
-    mw = MainWin(image_data, verify)
+    """
+    """
+
+    f = open("/home/zzy/Maca/code/new-captcha-website/images/jemh5lp4.b64")
+    image_data = f.read()
+    s = socket.socket()
+    s.connect(("152.3.144.156", 80))
+
+    """
+
+    mw = MainWin(image_data, s)
     mw.main()
+
+    page = s.recv(65535)
+    print page
+
+    s.close()
 
 class MainWin:
 
@@ -68,7 +101,9 @@ class MainWin:
 
     def on_submitbtn_clicked(self, widget, event=None):
         solution = self.entry.get_text()
-        urllib2.urlopen(self.verify)
+        # print solution
+        # urllib2.urlopen(self.verify)
+        self.verify.send(solution)
         self.window.destroy()
 
     def __init__(self, image, verify):

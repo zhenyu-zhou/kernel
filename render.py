@@ -8,6 +8,11 @@ import urllib2
 import base64
 import rsa
 
+import pcap, dpkt, socket
+import scapy
+from scapy.layers.ssl_tls import *
+from scapy.all import *
+
 from ctypes import *
 lib = cdll.LoadLibrary('./libzzy.so')
 
@@ -15,16 +20,44 @@ class Link(object):
     def __init__(self):
         self.obj = lib.Link_new()
 
-    def connect(self):
-        return lib.Link_connect(self.obj)
+    def connect(self, s):
+        return lib.Link_connect(self.obj, s)
 
     def recv(self):
         return lib.Link_recv(self.obj)
 
+def dump_packets(fname,goals,local="152.3.136.107"):
+    writer = dpkt.pcap.Writer(open(fname,"wb"))
+    for ts,pkt in pcap.pcap():
+        ether = dpkt.ethernet.Ethernet(pkt)
+        if ether.type != dpkt.ethernet.ETH_TYPE_IP:
+            continue
+
+        ip = ether.data
+	tcp = ip.data
+	if tcp.sport == 443 or tcp.dport == 443:
+            print "find 443"
+            writer.writepkt(pkt,ts)
+
+	"""
+        src = socket.inet_ntoa(ip.src)
+        dst = socket.inet_ntoa(ip.dst)
+        for goal in goals:
+            if (src == goal and dst == local) or (src == local and dst == goal):
+                print "yes!"
+                writer.writepkt(pkt,ts)
+                print src,dst,goal
+                break
+	"""
+
+    writer.close()
+
 def main():
 
+    # dump_packets("myserver.pcap",["192.168.0.137"])
+    
     l = Link()
-    s = c_char_p(l.connect())
+    s = c_char_p(l.connect("wolaishishikan"))
     data = s.value
     print "data1: ", data
     if data:
@@ -46,24 +79,29 @@ def main():
         buf = buf+data
 
     # print "data out: ", data
-    # print "buf: ", buf
+    print "buf: ", buf
     myset = buf.split('&')
     # print "set: ", myset
     ip = myset[0]
     port = myset[1]
+    print "addr - ", ip, ": ", port
+    
 
+    ip = "127.0.0.1"
+    port = 23333
     s = socket.socket()
     s.connect((ip, port))
 
-    (pub, priv) = rsa.newkeys(512)
-    s.send(pub.e)
+    key_len = 4096
+    (pub, priv) = rsa.newkeys(key_len)
+    s.send("0770")
+    # s.send(pub.e)
     s.send(pub.n)
 
-    image_data = s.recv(65535)
+    image_data = s.recv(4096)
     image_data = rsa.decrypt(image_data, priv)
 
     """
-
     message = myset[2]
     timestamp = myset[3]
     signature = myset[4]
@@ -88,8 +126,8 @@ def main():
     mw = MainWin(image_data, s)
     mw.main()
 
-    page = s.recv(65535)
-    print page
+    # page = s.recv(65535)
+    # print page
 
     s.close()
 

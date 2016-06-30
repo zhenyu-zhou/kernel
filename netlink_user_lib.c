@@ -13,7 +13,6 @@
 
 // using namespace std;
 
-
 struct sockaddr_nl src_addr, dest_addr;
 struct nlmsghdr *nlh = NULL;
 struct iovec iov;
@@ -23,8 +22,11 @@ char* end_tag = "&zzytail";
 
 class Link{
 public:
-char* connect()
+char* connect(char *hello_msg)
 {
+    // printf("hello_msg: %s\n", hello_msg);
+    // return NULL;
+
     sock_fd = socket(PF_NETLINK, SOCK_RAW, NETLINK_USER);
     while (sock_fd < 0)
     {
@@ -48,7 +50,7 @@ char* connect()
     nlh->nlmsg_pid = getpid();
     nlh->nlmsg_flags = 0;
 
-    strcpy((char*)NLMSG_DATA(nlh), "Hello from zzy");
+    strcpy((char*)NLMSG_DATA(nlh), hello_msg); // "Hello from zzy");
 
     iov.iov_base = (void *)nlh;
     iov.iov_len = nlh->nlmsg_len;
@@ -78,7 +80,7 @@ char* recv()
 
 extern "C" {
     Link* Link_new(){ return new Link(); }
-    void Link_connect(Link* l){ l->connect(); }
+    void Link_connect(Link* l, char *hello_msg){ l->connect(hello_msg); }
     void Link_recv(Link* l){l->recv();}
 }
 
